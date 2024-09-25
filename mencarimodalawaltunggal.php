@@ -1,10 +1,13 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>Title</title>
+        <title>Cari Modal Awal - Bunga Tunggal</title>
         <!-- Required meta tags -->
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
 
         <!-- Bootstrap CSS v5.2.1 -->
         <link
@@ -35,6 +38,9 @@
                 max-width: 600px;
                 margin: 40px auto;
                 padding: 20px;
+                background-color: #ffffff;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
             .card {
                 padding: 20px;
@@ -48,6 +54,7 @@
                 margin: 10px 0;
                 border: 1px solid #ced4da;
                 border-radius: 5px;
+                outline: none; /* Removes the outline */
             }
             input[type="submit"] {
                 background-color: #3498db;
@@ -72,77 +79,79 @@
         <header>
             <!-- place navbar here -->
         </header>
+        
         <main>
             <div class="container">
-                <!-- Bootstrap Card Component for the form -->
+                <h1>MODAL AWAL TUNGGAL</h1>
                 <div class="card bg-white">
-                    <!-- Moving h1 inside card -->
-                    <h1>TOTAL SUKU BUNGA TUNGGAL</h1>
-
                     <?php
-                        if(isset($_POST['hitung'])){
-                            $modal = $_POST['modal']; 
-                            $bunga = $_POST['bunga']; 
-                            $suku = $_POST['suku']; 
-                            $periode = $_POST['periode']; 
-                            $jangka = $_POST['jangka']; 
-                    
-                            function hitungBungaTunggal($modal, $bunga, $jangka) {
-                                $bunga_decimal = $bunga / 100;
-                                $total_bunga = $modal * $bunga_decimal * $jangka;
-                                $total_pinjaman = $modal + $total_bunga;
-                                return $total_pinjaman;
-                            }
-                    
-                            switch ($periode) {
-                                case "bulan":
-                                    $jangka_waktu = $jangka; 
-                                    break;
-                                case "triwulan":
-                                    $jangka_waktu = $jangka * 3; 
-                                    break;
-                                case "semester":
-                                    $jangka_waktu = $jangka * 6; 
-                                    break;
-                                case "tahun":
-                                    $jangka_waktu = $jangka * 12; 
-                                    break;
-                                default:
-                                    $jangka_waktu = 0;
-                            }
-                    
-                            switch ($suku) {
-                                case "bulan":
-                                    $jangka_waktu_bunga = $jangka_waktu; 
-                                    break;
-                                case "triwulan":
-                                    $jangka_waktu_bunga = $jangka_waktu / 3; 
-                                    break;
-                                case "semester":
-                                    $jangka_waktu_bunga = $jangka_waktu / 6; 
-                                    break;
-                                case "tahun":
-                                    $jangka_waktu_bunga = $jangka_waktu / 12; 
-                                    break;
-                                default:
-                                    $jangka_waktu_bunga = 0;
-                            }
+                    if (isset($_POST['hitung'])) {
+                        $total_pinjaman = $_POST['total_pinjaman']; 
+                        $bunga = $_POST['bunga']; 
+                        $suku = $_POST['suku']; 
+                        $periode = $_POST['periode']; 
+                        $jangka = $_POST['jangka']; 
 
-                            $hasil = hitungBungaTunggal($modal, $bunga, $jangka_waktu_bunga);
-                            $hasil_formatted = number_format($hasil, 2, ',', '.');
-                    
-                            echo '<div class="result">';
-                            echo "Modal awal: Rp. ".number_format($modal, 2, ',', '.')."<br>";
-                            echo "Suku bunga: ".$bunga."%"."/".$suku."<br>";
-                            echo "Jangka waktu: ".$jangka." ".$periode."<br>"; 
-                            echo "Total pinjaman setelah bunga: Rp. ".$hasil_formatted."<br>";
-                            echo '</div>';
+                        // Fungsi untuk menghitung modal awal dengan bunga tunggal
+                        function hitungModalAwalTunggal($total_pinjaman, $bunga, $jangka) {
+                            $bunga_decimal = $bunga / 100;
+                            $modal = $total_pinjaman / (1 + ($bunga_decimal * $jangka));
+                            return $modal;
                         }
-                    ?>
 
+                        // Mengonversi jangka waktu sesuai periode yang dipilih
+                        switch ($periode) {
+                            case "bulan":
+                                $jangka_waktu = $jangka; // Dalam bulan
+                                break;
+                            case "triwulan":
+                                $jangka_waktu = $jangka * 3; // 1 triwulan = 3 bulan
+                                break;
+                            case "semester":
+                                $jangka_waktu = $jangka * 6; // 1 semester = 6 bulan
+                                break;
+                            case "tahun":
+                                $jangka_waktu = $jangka * 12; // 1 tahun = 12 bulan
+                                break;
+                            default:
+                                $jangka_waktu = 0;
+                        }
+
+                        // Mengonversi suku bunga sesuai interval waktu yang dipilih
+                        switch ($suku) {
+                            case "bulan":
+                                $jangka_waktu_bunga = $jangka_waktu; // Suku bunga per bulan
+                                break;
+                            case "triwulan":
+                                $jangka_waktu_bunga = $jangka_waktu / 3; // Suku bunga per triwulan
+                                break;
+                            case "semester":
+                                $jangka_waktu_bunga = $jangka_waktu / 6; // Suku bunga per semester
+                                break;
+                            case "tahun":
+                                $jangka_waktu_bunga = $jangka_waktu / 12; // Suku bunga per tahun
+                                break;
+                            default:
+                                $jangka_waktu_bunga = 0;
+                        }
+
+                        // Menghitung modal awal dengan bunga tunggal
+                        $modal_awal = hitungModalAwalTunggal($total_pinjaman, $bunga, $jangka_waktu_bunga);
+                        $modal_awal_formatted = number_format($modal_awal, 2, ',', '.');
+                        $total_pinjaman_formatted = number_format($total_pinjaman, 2, ',', '.');
+
+                        // Output hasil perhitungan
+                        echo '<div class="result">';
+                        echo "Total Pinjaman: Rp. $total_pinjaman_formatted<br>";
+                        echo "Suku bunga: $bunga%"."/".$suku."<br>";
+                        echo "Jangka waktu: $jangka $periode<br>"; 
+                        echo "Modal awal: Rp. $modal_awal_formatted<br>";
+                        echo '</div>';
+                    }
+                    ?>
                     <form action="" method="post">
-                        <label for="modal">Modal Awal (Rp)</label><br>
-                        <input type="number" name="modal" id="modal" required><br><br>
+                        <label for="total_pinjaman">Total Pinjaman (Rp)</label><br>
+                        <input type="number" name="total_pinjaman" id="total_pinjaman" required><br><br>
 
                         <label for="bunga">Suku Bunga (%)</label><br>
                         <input type="number" step="0.01" name="bunga" id="bunga" required>
@@ -165,16 +174,17 @@
 
                         <input type="submit" name="hitung" value="Hitung">
                     </form>
-                    <div>
-                        <a href="mencarimodalawaltunggal.php"><input type="submit" value="modal awal tunggal"></a>
-                    </div>
                 </div>
-
+                <div>
+                    <a href="totalpinjamanamajemuk.php"><input type="submit" value="total bunga majemuk"></a>
+                </div>
             </div>
         </main>
+
         <footer>
             <!-- place footer here -->
         </footer>
+        
         <!-- Bootstrap JavaScript Libraries -->
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
             integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4JQkC+hVqc2pM8ODewa9r"
