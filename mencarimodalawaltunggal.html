@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Cari Modal Awal - Bunga Tunggal</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <style>
+            body {
+                background-color: #f9fafb;
+                font-family: 'Arial', sans-serif;
+                background-image: url('baldi.png'); 
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+            h1 {
+                color: #2c3e50;
+                text-align: center;
+                margin-top: 20px;
+            }
+            label {
+                font-weight: bold;
+                color: #34495e;
+            }
+            .container {
+                max-width: 600px;
+                margin: 40px auto;
+                padding: 20px;
+                background-color: #ffffff;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .card {
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                border: none;
+            }
+            input[type="number"], select, input[type="submit"] {
+                width: 100%;
+                padding: 10px;
+                margin: 10px 0;
+                border: 1px solid #ced4da;
+                border-radius: 5px;
+                outline: none;
+            }
+            input[type="submit"] {
+                background-color: #3498db;
+                color: white;
+                font-weight: bold;
+                border: none;
+                cursor: pointer;
+            }
+            input[type="submit"]:hover {
+                background-color: #2980b9;
+            }
+            .result {
+                text-align: center;
+                font-size: 18px;
+                color: #27ae60;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <div class="container">
+                <h1>MODAL AWAL TUNGGAL</h1>
+                <div class="card bg-white">
+                    <form id="formBungaTunggal">
+                        <label for="total_pinjaman">Total Pinjaman (Rp)</label><br>
+                        <input type="number" name="total_pinjaman" id="total_pinjaman" required><br><br>
+
+                        <label for="bunga">Suku Bunga (%)</label><br>
+                        <input type="number" step="0.01" name="bunga" id="bunga" required>
+
+                        <select name="suku" id="suku" required>
+                            <option value="bulan">Per Bulan</option>
+                            <option value="triwulan">Per Triwulan</option>
+                            <option value="semester">Per Semester</option>
+                            <option value="tahun">Per Tahun</option>
+                        </select><br><br>
+
+                        <label for="jangka">Jumlah Periode</label><br>
+                        <input type="number" name="jangka" id="jangka" required>
+                        <select name="periode" id="periode" required>
+                            <option value="bulan">Bulan</option>
+                            <option value="triwulan">Triwulan</option>
+                            <option value="semester">Semester</option>
+                            <option value="tahun">Tahun</option>
+                        </select><br><br>
+
+                        <input type="submit" value="Hitung">
+                    </form>
+                    <div id="result" class="result"></div>
+                </div>
+                <div>
+                    <a href="index.html"><input type="submit" value="total bunga tunggal"></a>
+                    <a href="mencarimodalawaltunggal.html"><input type="submit" value="modal awal tunggal"></a>
+                    <a href="totalpinjamanamajemuk.html"><input type="submit" value="total bunga majemuk"></a>
+                    <a href="mencarimodalawalmajemuk.html"><input type="submit" value="modal awal majemuk"></a>
+                </div>
+            </div>
+        </main>
+        
+        <script>
+            document.getElementById('formBungaTunggal').addEventListener('submit', function (event) {
+                event.preventDefault();
+                
+                let totalPinjaman = parseFloat(document.getElementById('total_pinjaman').value);
+                let bunga = parseFloat(document.getElementById('bunga').value);
+                let suku = document.getElementById('suku').value;
+                let jangka = parseInt(document.getElementById('jangka').value);
+                let periode = document.getElementById('periode').value;
+
+                function hitungModalAwalTunggal(totalPinjaman, bunga, jangka) {
+                    let bunga_decimal = bunga / 100;
+                    let modal_awal = totalPinjaman / (1 + (bunga_decimal * jangka));
+                    return modal_awal;
+                }
+
+                let jangka_waktu;
+                switch (periode) {
+                    case "bulan": jangka_waktu = jangka; break;
+                    case "triwulan": jangka_waktu = jangka * 3; break;
+                    case "semester": jangka_waktu = jangka * 6; break;
+                    case "tahun": jangka_waktu = jangka * 12; break;
+                }
+
+                let jangka_waktu_bunga;
+                switch (suku) {
+                    case "bulan": jangka_waktu_bunga = jangka_waktu; break;
+                    case "triwulan": jangka_waktu_bunga = jangka_waktu / 3; break;
+                    case "semester": jangka_waktu_bunga = jangka_waktu / 6; break;
+                    case "tahun": jangka_waktu_bunga = jangka_waktu / 12; break;
+                }
+
+                let modal_awal = hitungModalAwalTunggal(totalPinjaman, bunga, jangka_waktu_bunga);
+                let formatted_modal = modal_awal.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+
+                document.getElementById('result').innerHTML = 
+                    "Total Pinjaman: " + totalPinjaman.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) + "<br>" +
+                    "Suku bunga: " + bunga + "%" + "/" + suku + "<br>" +
+                    "Jangka waktu: " + jangka + " " + periode + "<br>" +
+                    "Modal awal: " + formatted_modal + "<br>";
+            });
+        </script>
+    </body>
+</html>
