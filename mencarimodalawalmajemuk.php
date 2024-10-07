@@ -158,7 +158,7 @@
                     <input type="submit" name="hitung" value="Hitung">
                 </form>
                 <div>
-                    <a href="sukubungatunggal.php"><input type="submit" value="total bunga tunggal"></a>
+                    <a href="index.php"><input type="submit" value="total bunga tunggal"></a>
                 </div>
             </div>
         </main>
